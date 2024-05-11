@@ -10,6 +10,11 @@ namespace Ontap_Net104_319.Models
         {
         }
         public DbSet<Account> Accounts { get; set; } // Đại diện cho 1 bảng trong CSDL
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Bill> Bills { get; set; }
+        public DbSet<BillDetails> BillDetails { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartDetails> CartDetails { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
