@@ -10,7 +10,7 @@ namespace Ontap_Net104_319.Configurations
         {
             builder.HasKey(p => p.Username);
             builder.HasOne(p => p.Account).WithOne(p => p.Cart).
-                HasForeignKey<Account>(p => p.Username); // Quan hệ 1-1
+                HasForeignKey<Cart>(p => p.Username); // Quan hệ 1-1
         }
     }
 }

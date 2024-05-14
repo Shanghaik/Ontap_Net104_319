@@ -41,7 +41,14 @@ namespace Ontap_Net104_319.Controllers
             try
             {
                 context.Accounts.Add(account);
-                context.SaveChanges();
+                // Tạo mới đồng thời 1 giỏ hàng
+                Cart cart = new Cart()
+                {
+                    Username = account.Username,     
+                    Status = 1
+                };
+                context.Carts.Add(cart);
+                context.SaveChanges(); // Lưu thay đổi
                 TempData["Status"] = "Tạo tài khoản thành công";
                 return RedirectToAction("Login");
             }
