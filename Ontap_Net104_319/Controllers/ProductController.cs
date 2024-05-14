@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.Metadata;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Ontap_Net104_319.Models;
 
 namespace Ontap_Net104_319.Controllers
@@ -48,6 +50,31 @@ namespace Ontap_Net104_319.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-
+        public IActionResult AddtoCart(Guid id, int quantity)
+        {
+            // Kiểm tra dữ liệu đăng nhập
+            var check = HttpContext.Session.GetString("username");
+            if (String.IsNullOrEmpty(check)) // chưa đăng nhập => bắt đăng nhập
+            {
+                return RedirectToAction("Login", "Account");
+            }else
+            {
+                // Kiểm tra xem tài trong giỏ hàng của user này đã có sản phẩm này hay chưa?
+                var cartItem = _context.CartDetails.FirstOrDefault(p => p.ProductId == id && p.Username == check);
+                if (cartItem == null) { // Nếu giỏ hàng của user này chưa có sản phẩm đó
+                    CartDetails cartDetails = new CartDetails()
+                    {
+                        Id = Guid.NewGuid(), ProductId = id, Quantity = quantity, Status = 1, Username = check
+                    };
+                    _context.CartDetails.Add(cartDetails); _context.SaveChanges();
+                }else // Nếu có rồi thì mình sẽ cộng dồn (chưa check chủng gì đâu nhé)
+                {
+                    cartItem.Quantity = cartItem.Quantity + quantity; // Cập nhật số lượng
+                    _context.CartDetails.Update(cartItem);
+                    _context.SaveChanges();
+                }
+                return RedirectToAction("Index", "Product");
+            }
+        }
     }
 }
